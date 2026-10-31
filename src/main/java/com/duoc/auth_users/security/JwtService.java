@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.duoc.auth_users.model.Usuario;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -39,6 +40,14 @@ public class JwtService {
                 .expiration(expiracion)
                 .signWith(clave)
                 .compact();
+    }
+
+    public Claims validarToken(String token) {
+        return Jwts.parser()
+                .verifyWith(clave)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
 }
