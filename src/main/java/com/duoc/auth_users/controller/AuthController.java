@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.duoc.auth_users.dto.LoginRequest;
+import com.duoc.auth_users.dto.LoginResponse;
 import com.duoc.auth_users.dto.RegistroRequest;
 import com.duoc.auth_users.dto.UsuarioResponse;
 import com.duoc.auth_users.service.AuthService;
@@ -29,9 +30,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UsuarioResponse> login(@Valid @RequestBody LoginRequest request) {
-        UsuarioResponse usuario = authService.login(request);
-        return ResponseEntity.ok(usuario);
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse respuesta = authService.login(request);
+        return ResponseEntity.ok(respuesta);
     }
 
 }

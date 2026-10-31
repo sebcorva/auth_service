@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.duoc.auth_users.dto.LoginRequest;
+import com.duoc.auth_users.dto.LoginResponse;
 import com.duoc.auth_users.dto.RegistroRequest;
 import com.duoc.auth_users.dto.UsuarioRequest;
 import com.duoc.auth_users.dto.UsuarioResponse;
@@ -11,6 +12,7 @@ import com.duoc.auth_users.exception.CredencialesInvalidasException;
 import com.duoc.auth_users.model.Rol;
 import com.duoc.auth_users.model.Usuario;
 import com.duoc.auth_users.repository.UsuarioRepository;
+import com.duoc.auth_users.security.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,11 +20,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private static final String MENSAJE_CREDENCIALES_INVALIDAS = "Email o contraseña incorrectos";
-
     private final UsuarioService usuarioService;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
     public UsuarioResponse registrar(RegistroRequest request) {
@@ -39,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UsuarioResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         String emailNormalizado = request.email().trim().toLowerCase();
 
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(emailNormalizado)
@@ -49,7 +50,8 @@ public class AuthServiceImpl implements AuthService {
             throw new CredencialesInvalidasException();
         }
 
-        return UsuarioResponse.from(usuario);
+        String token = jwtService.generarToken(usuario);
+        return new LoginResponse(token, UsuarioResponse.from(usuario));
     }
 
 }
