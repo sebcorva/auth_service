@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.duoc.auth_users.dto.UsuarioRequest;
 import com.duoc.auth_users.dto.UsuarioResponse;
+import com.duoc.auth_users.exception.ConflictoException;
+import com.duoc.auth_users.exception.RecursoNoEncontradoException;
 import com.duoc.auth_users.model.Rol;
 import com.duoc.auth_users.model.Usuario;
 import com.duoc.auth_users.repository.UsuarioRepository;
@@ -20,7 +22,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository usuarioRepository;
 
     private Usuario searchUsuarioById(Long id) {
-        return usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("El usuario no existe"));
     }
 
     private String normalizaEmail(String email) {
@@ -49,7 +52,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         boolean emailExists = usuarioRepository.existsByEmailIgnoreCase(emailNormalizado);
 
         if (emailExists) {
-            throw new IllegalArgumentException("El email ingresado ya esta registrado");
+            throw new ConflictoException("El email ingresado ya esta registrado");
         }
 
         Usuario nuevoUsuario = new Usuario();
@@ -78,7 +81,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         boolean cambioEmail = !emailNormalizado.equals(usuarioEncontrado.getEmail());
 
         if (cambioEmail && usuarioRepository.existsByEmailIgnoreCase(emailNormalizado)) {
-            throw new IllegalArgumentException("El email ingresado ya esta registrado");
+            throw new ConflictoException("El email ingresado ya esta registrado");
         }
 
         usuarioEncontrado.setNombre(request.nombre());
