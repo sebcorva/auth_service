@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.duoc.auth_users.dto.UsuarioRequest;
 import com.duoc.auth_users.dto.UsuarioResponse;
@@ -12,6 +13,7 @@ import com.duoc.auth_users.exception.ConflictoException;
 import com.duoc.auth_users.exception.RecursoNoEncontradoException;
 import com.duoc.auth_users.model.Rol;
 import com.duoc.auth_users.model.Usuario;
+import com.duoc.auth_users.repository.PagoRepository;
 import com.duoc.auth_users.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PagoRepository pagoRepository;
 
     private Usuario searchUsuarioById(Long id) {
         return usuarioRepository.findById(id)
@@ -100,9 +103,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    @Transactional
     public void deleteUsuario(Long id) {
         Usuario usuarioEncontrado = searchUsuarioById(id);
-
+        // Eliminar pago
+        pagoRepository.deleteByUsuarioId(id);
+        // Eliminar usuario
         usuarioRepository.delete(usuarioEncontrado);
     }
+
 }

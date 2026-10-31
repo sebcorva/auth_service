@@ -13,7 +13,7 @@ import com.duoc.auth_users.repository.UsuarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-// Crea el primer ADMIN al arrancar; el registro publico solo crea USUARIO
+// Crea el primer ADMIN al arrancar;
 @Slf4j
 @Component
 public class AdminInicial implements CommandLineRunner {
