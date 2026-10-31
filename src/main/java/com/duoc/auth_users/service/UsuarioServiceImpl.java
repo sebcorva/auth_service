@@ -3,6 +3,7 @@ package com.duoc.auth_users.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.duoc.auth_users.dto.UsuarioRequest;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private Usuario searchUsuarioById(Long id) {
         return usuarioRepository.findById(id)
@@ -60,7 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         nuevoUsuario.setNombre(request.nombre());
         nuevoUsuario.setApellido(request.apellido());
         nuevoUsuario.setEmail(emailNormalizado);
-        nuevoUsuario.setPasswordHash(request.password());
+        nuevoUsuario.setPasswordHash(passwordEncoder.encode(request.password()));
         nuevoUsuario.setRol(request.rol() != null ? request.rol() : Rol.USUARIO);
         nuevoUsuario.setPremium(false);
         nuevoUsuario.setFechaRegistro(LocalDateTime.now());
@@ -87,7 +89,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioEncontrado.setNombre(request.nombre());
         usuarioEncontrado.setApellido(request.apellido());
         usuarioEncontrado.setEmail(emailNormalizado);
-        usuarioEncontrado.setPasswordHash(request.password());
+        usuarioEncontrado.setPasswordHash(passwordEncoder.encode(request.password()));
         usuarioEncontrado.setEmail(emailNormalizado);
         if (request.rol() != null) {
             usuarioEncontrado.setRol(request.rol());
