@@ -117,6 +117,14 @@ Todas las respuestas de error tienen el mismo formato:
 | `409` | Email ya registrado o usuario ya premium |
 | `500` | Error inesperado (sin detalles internos) |
 
+## Colección Postman
+
+En Postman: **Import** → [`postman/auth-users.postman_collection.json`](postman/auth-users.postman_collection.json).
+
+- No necesita environment: la URL (`baseUsuarios`), los tokens y los ids se guardan como **variables de la colección**.
+- Las carpetas están numeradas (login → registro → usuarios → pagos → limpieza); se ejecutan en orden o con **Run collection**.
+- Cada request tiene un test con el código esperado. El pago premium se prueba con un usuario recién registrado, y la carpeta final lo elimina, así que la colección se puede ejecutar varias veces sin cambiar los usuarios de prueba.
+
 ## Flujo de prueba sugerido (Postman)
 
 1. `POST /auth/login` con `usuario@biblioteca.cl` → copiar el `token`.
