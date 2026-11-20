@@ -32,8 +32,12 @@ build/
 ### VS Code ###
 .vscode/
 
-# Archivos de entorno y logs
+# Archivos de entorno y logs (credenciales: nunca a git)
 .env
+
+# Wallet de Oracle: nunca a git
+wallet/
+Wallet_*/
 *.log
 
 # Archivo comprimido original del Wallet (opcional, para no subir el .zip pesado)

@@ -19,15 +19,21 @@ Forma parte de un sistema de dos microservicios independientes, cada uno con su 
 
 ## Cómo ejecutar
 
-La wallet de Oracle (`src/main/resources/wallet/`) y la configuración (`application.properties`) vienen incluidas en el repositorio, así que no hace falta configurar nada.
+Las credenciales **no están en el repositorio**: se leen de variables de entorno. En local, la app las toma de un archivo `.env` en la raíz (`spring.config.import=optional:file:.env[.properties]`).
+
+1. Descargar la wallet de Oracle Cloud (**Database connection → Download wallet**) y descomprimirla en la carpeta `wallet/` del proyecto.
+2. Copiar `.env.example` a `.env` y completar `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `ADMIN_EMAIL` y `ADMIN_PASSWORD`. `JWT_SECRET` debe ser **el mismo** que en gestor-biblioteca.
+3. Ejecutar:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
+`.env` y `wallet/` están en `.gitignore`: nunca se suben a git.
+
 La API queda disponible en `http://localhost:8081`.
 
-Al arrancar, si no existe ningún ADMIN, la aplicación crea uno automáticamente (`config/AdminInicial`) con las credenciales de `admin.email` / `admin.password`.
+Al arrancar, si no existe ningún ADMIN, la aplicación crea uno automáticamente (`config/AdminInicial`) con las credenciales de `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
 
 ## Usuarios de prueba
 
