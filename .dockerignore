@@ -1,0 +1,11 @@
+target/
+.git/
+.idea/
+.vscode/
+*.iml
+docs/
+postman/
+# Credenciales: nunca dentro de la imagen
+.env
+wallet/
+Wallet_*/

@@ -1,0 +1,13 @@
+services:
+  auth-users:
+    build: .
+    ports:
+      - "8081:8081"
+    # Copia .env.example a .env y completa los datos (el .env no se sube a git)
+    env_file: .env
+    environment:
+      # Dentro del contenedor la wallet queda montada en /app/wallet
+      TNS_ADMIN: /app/wallet
+    volumes:
+      - ./wallet:/app/wallet:ro
+    restart: always
