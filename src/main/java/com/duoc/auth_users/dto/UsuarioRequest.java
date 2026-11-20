@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import com.duoc.auth_users.validation.PasswordSegura;
+
 public record UsuarioRequest(
 
         @NotBlank(message = "El nombre no puede estar vacio") @Size(max = 100, message = "El nombre no puede superar los 100 caracteres") String nombre,
@@ -14,7 +16,7 @@ public record UsuarioRequest(
 
         @NotBlank(message = "El email no puede estar vacio") @Email(message = "El email no tiene un formato valido") @Size(max = 150, message = "El email no puede superar los 150 caracteres") String email,
 
-        @NotBlank(message = "La contraseña no puede estar vacia") @Size(min = 6, max = 72, message = "La contraseña debe tener entre 6 y 72 caracteres") String password,
+        @NotBlank(message = "La contraseña no puede estar vacia") @PasswordSegura String password,
 
         Rol rol) {
 }
