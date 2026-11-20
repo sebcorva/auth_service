@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.validation.Valid;
 
 import com.duoc.auth_users.dto.UsuarioRequest;
+import com.duoc.auth_users.dto.UsuarioUpdateRequest;
 import com.duoc.auth_users.dto.UsuarioResponse;
 import com.duoc.auth_users.security.UsuarioAutenticado;
 import com.duoc.auth_users.service.UsuarioService;
@@ -61,7 +62,7 @@ public class UsuarioController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public ResponseEntity<UsuarioResponse> updateUsuario(@PathVariable Long id,
-            @Valid @RequestBody UsuarioRequest request,
+            @Valid @RequestBody UsuarioUpdateRequest request,
             @AuthenticationPrincipal UsuarioAutenticado usuarioActual) {
         if (request.rol() != null && !"ADMIN".equals(usuarioActual.rol())) {
             throw new AccessDeniedException("Solo un ADMIN puede cambiar el rol");

@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.duoc.auth_users.dto.UsuarioRequest;
 import com.duoc.auth_users.dto.UsuarioResponse;
+import com.duoc.auth_users.dto.UsuarioUpdateRequest;
 import com.duoc.auth_users.exception.ConflictoException;
 import com.duoc.auth_users.exception.RecursoNoEncontradoException;
 import com.duoc.auth_users.model.Rol;
@@ -84,21 +85,35 @@ class UsuarioServiceImplTest {
         when(usuarioRepository.existsByEmailIgnoreCase("otro@test.cl")).thenReturn(true);
 
         assertThatThrownBy(() -> usuarioService.updateUsuario(7L,
-                new UsuarioRequest("Ana", "Perez", "otro@test.cl", "Clave2026!", null)))
+                new UsuarioUpdateRequest("Ana", "Perez", "otro@test.cl", null, null)))
                 .isInstanceOf(ConflictoException.class);
     }
 
     @Test
-    void actualizarSinRolConservaElRolActual() {
-        when(usuarioRepository.findById(7L)).thenReturn(Optional.of(existente()));
-        when(passwordEncoder.encode(any())).thenReturn("hash-2");
+    void actualizarSinPasswordNiRolConservaAmbos() {
+        Usuario usuario = existente();
+        when(usuarioRepository.findById(7L)).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(Usuario.class))).thenAnswer(inv -> inv.getArgument(0));
 
         UsuarioResponse actualizado = usuarioService.updateUsuario(7L,
-                new UsuarioRequest("Ana Maria", "Perez", "ana@test.cl", "Clave2026!", null));
+                new UsuarioUpdateRequest("Ana Maria", "Perez", "ana@test.cl", null, null));
 
         assertThat(actualizado.nombre()).isEqualTo("Ana Maria");
         assertThat(actualizado.rol()).isEqualTo(Rol.USUARIO);
+        assertThat(usuario.getPasswordHash()).isEqualTo("hash");
+        verify(passwordEncoder, never()).encode(any());
+    }
+
+    @Test
+    void actualizarConPasswordLaHashea() {
+        Usuario usuario = existente();
+        when(usuarioRepository.findById(7L)).thenReturn(Optional.of(usuario));
+        when(passwordEncoder.encode("Nueva2026!")).thenReturn("hash-nuevo");
+        when(usuarioRepository.save(any(Usuario.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        usuarioService.updateUsuario(7L, new UsuarioUpdateRequest("Ana", "Perez", "ana@test.cl", "Nueva2026!", null));
+
+        assertThat(usuario.getPasswordHash()).isEqualTo("hash-nuevo");
     }
 
     @Test

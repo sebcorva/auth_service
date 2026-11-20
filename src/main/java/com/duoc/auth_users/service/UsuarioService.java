@@ -3,6 +3,7 @@ package com.duoc.auth_users.service;
 import java.util.List;
 
 import com.duoc.auth_users.dto.UsuarioRequest;
+import com.duoc.auth_users.dto.UsuarioUpdateRequest;
 import com.duoc.auth_users.dto.UsuarioResponse;
 
 public interface UsuarioService {
@@ -13,7 +14,7 @@ public interface UsuarioService {
 
     UsuarioResponse createUsuario(UsuarioRequest request);
 
-    UsuarioResponse updateUsuario(Long id, UsuarioRequest request);
+    UsuarioResponse updateUsuario(Long id, UsuarioUpdateRequest request);
 
     void deleteUsuario(Long id);
 

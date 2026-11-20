@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.duoc.auth_users.dto.UsuarioRequest;
+import com.duoc.auth_users.dto.UsuarioUpdateRequest;
 import com.duoc.auth_users.dto.UsuarioResponse;
 import com.duoc.auth_users.exception.ConflictoException;
 import com.duoc.auth_users.exception.RecursoNoEncontradoException;
@@ -77,7 +78,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioResponse updateUsuario(Long id, UsuarioRequest request) {
+    public UsuarioResponse updateUsuario(Long id, UsuarioUpdateRequest request) {
 
         Usuario usuarioEncontrado = searchUsuarioById(id);
 
@@ -92,8 +93,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioEncontrado.setNombre(request.nombre());
         usuarioEncontrado.setApellido(request.apellido());
         usuarioEncontrado.setEmail(emailNormalizado);
-        usuarioEncontrado.setPasswordHash(passwordEncoder.encode(request.password()));
-        usuarioEncontrado.setEmail(emailNormalizado);
+        // La contraseña es opcional al editar: solo se cambia si viene en el request
+        if (request.cambiaPassword()) {
+            usuarioEncontrado.setPasswordHash(passwordEncoder.encode(request.password()));
+        }
         if (request.rol() != null) {
             usuarioEncontrado.setRol(request.rol());
         }
