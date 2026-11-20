@@ -15,6 +15,9 @@ CREATE TABLE usuarios (
     rol             VARCHAR2(20)  NOT NULL,
     premium         NUMBER(1)     NOT NULL,
     fecha_registro  TIMESTAMP(6)  NOT NULL,
+    -- Recuperacion de contraseña: hash BCrypt del codigo y su vencimiento (null si no hay solicitud)
+    codigo_recuperacion_hash   VARCHAR2(60),
+    codigo_recuperacion_expira TIMESTAMP(6),
     CONSTRAINT pk_usuarios PRIMARY KEY (id),
     CONSTRAINT uk_usuarios_email UNIQUE (email),
     CONSTRAINT ck_usuarios_rol CHECK (rol IN ('ADMIN', 'USUARIO')),

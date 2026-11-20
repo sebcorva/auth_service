@@ -43,7 +43,7 @@ class UsuarioServiceImplTest {
     private UsuarioServiceImpl usuarioService;
 
     private Usuario existente() {
-        return new Usuario(7L, "Ana", "Perez", "ana@test.cl", "hash", Rol.USUARIO, false, LocalDateTime.now());
+        return new Usuario(7L, "Ana", "Perez", "ana@test.cl", "hash", Rol.USUARIO, false, LocalDateTime.now(), null, null);
     }
 
     @Test

@@ -48,4 +48,11 @@ public class Usuario {
 
     @Column(name = "fecha_registro", nullable = false)
     private LocalDateTime fechaRegistro;
+
+    // Recuperacion de contraseña: codigo de un solo uso, guardado hasheado (BCrypt)
+    @Column(name = "codigo_recuperacion_hash", length = 60)
+    private String codigoRecuperacionHash;
+
+    @Column(name = "codigo_recuperacion_expira")
+    private LocalDateTime codigoRecuperacionExpira;
 }

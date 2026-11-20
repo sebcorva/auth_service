@@ -44,7 +44,7 @@ class PagoServiceImplTest {
 
     @Test
     void comprarPremiumMarcaAlUsuarioYDevuelveTokenNuevo() {
-        Usuario usuario = new Usuario(5L, "Ana", "Perez", "ana@test.cl", "hash", Rol.USUARIO, false, LocalDateTime.now());
+        Usuario usuario = new Usuario(5L, "Ana", "Perez", "ana@test.cl", "hash", Rol.USUARIO, false, LocalDateTime.now(), null, null);
         when(usuarioRepository.findById(5L)).thenReturn(Optional.of(usuario));
         when(pagoRepository.save(any(Pago.class))).thenAnswer(inv -> inv.getArgument(0));
         when(jwtService.generarToken(usuario)).thenReturn("token-premium");
@@ -59,7 +59,7 @@ class PagoServiceImplTest {
 
     @Test
     void comprarPremiumSiendoPremiumLanzaConflicto() {
-        Usuario premium = new Usuario(5L, "Ana", "Perez", "ana@test.cl", "hash", Rol.USUARIO, true, LocalDateTime.now());
+        Usuario premium = new Usuario(5L, "Ana", "Perez", "ana@test.cl", "hash", Rol.USUARIO, true, LocalDateTime.now(), null, null);
         when(usuarioRepository.findById(5L)).thenReturn(Optional.of(premium));
 
         assertThatThrownBy(() -> pagoService.comprarPremium(5L)).isInstanceOf(ConflictoException.class);

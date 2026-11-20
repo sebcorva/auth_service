@@ -1,5 +1,9 @@
 package com.duoc.auth_users.controller;
 
+import com.duoc.auth_users.dto.RecuperarRequest;
+import com.duoc.auth_users.dto.RecuperarResponse;
+import com.duoc.auth_users.dto.RestablecerRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,4 +39,15 @@ public class AuthController {
         return ResponseEntity.ok(respuesta);
     }
 
+
+    @PostMapping("/recuperar")
+    public ResponseEntity<RecuperarResponse> recuperar(@Valid @RequestBody RecuperarRequest request) {
+        return ResponseEntity.ok(authService.recuperar(request));
+    }
+
+    @PostMapping("/restablecer")
+    public ResponseEntity<Void> restablecer(@Valid @RequestBody RestablecerRequest request) {
+        authService.restablecer(request);
+        return ResponseEntity.noContent().build();
+    }
 }

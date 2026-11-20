@@ -78,6 +78,24 @@ El token se valida en cada request (`JwtAuthFilter`), sin sesión en el servidor
 |---|---|---|---|
 | POST | `/auth/registro` | `nombre`, `apellido`, `email`, `password` | `201` usuario creado (rol USUARIO, premium false) |
 | POST | `/auth/login` | `email`, `password` | `200` `{ token, tipo: "Bearer", usuario }` |
+| POST | `/auth/recuperar` | `email` | `200` `{ mensaje, codigoDemo, minutosVigencia }` (ver abajo) |
+| POST | `/auth/restablecer` | `email`, `codigo`, `nuevaPassword` | `204` · `400` si el código es inválido, expiró o ya se usó |
+
+### Reglas de contraseña
+
+Se aplican en el registro, al crear o editar un usuario y al restablecer la contraseña. Cada regla incumplida aparece como un elemento de `detalles` en el `400`:
+
+1. Mínimo 8 caracteres.
+2. Máximo 20 caracteres.
+3. Al menos una mayúscula y una minúscula.
+4. Al menos un número.
+5. Al menos un carácter especial.
+6. Sin espacios.
+
+### Recuperar contraseña (simulado)
+
+1. `POST /auth/recuperar` genera un código de **6 dígitos** válido por **15 minutos** y lo guarda hasheado (BCrypt). Como no se envían correos, el código se devuelve en `codigoDemo` para simular el email. Si el email no existe, la respuesta es la misma pero con `codigoDemo: null`.
+2. `POST /auth/restablecer` con el email, el código y la nueva contraseña. El código es de **un solo uso**.
 
 ### Usuarios
 
@@ -87,7 +105,7 @@ El token se valida en cada request (`JwtAuthFilter`), sin sesión en el servidor
 | GET | `/usuarios` | Solo ADMIN | `200` lista de usuarios |
 | GET | `/usuarios/{id}` | ADMIN o el propio usuario | `200` |
 | POST | `/usuarios` | Solo ADMIN (puede elegir el rol) | `201` |
-| PUT | `/usuarios/{id}` | ADMIN o el propio usuario (solo ADMIN cambia el rol) | `200` |
+| PUT | `/usuarios/{id}` | ADMIN o el propio usuario (solo ADMIN cambia el rol). `password` es **opcional**: si no se envía, se conserva | `200` |
 | DELETE | `/usuarios/{id}` | Solo ADMIN (borra también sus pagos) | `204` |
 
 ### Pagos (usuario autenticado)
