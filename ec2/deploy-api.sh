@@ -71,6 +71,12 @@ rollback() {
   trap - EXIT
   if (( status != 0 )); then
     if [[ "$new_container_attempted" == true ]] && docker inspect auth-users >/dev/null 2>&1; then
+      echo "Estado del contenedor: $(docker inspect -f '{{.State.Status}} exit={{.State.ExitCode}} reinicios={{.RestartCount}}' auth-users)" >&2
+      echo "--- Ultimos errores de auth-users (docker logs) ---" >&2
+      docker logs auth-users 2>&1 \
+        | grep -E 'ERROR|Caused by|Exception|APPLICATION FAILED|Description:|Action:|ORA-' \
+        | tail -n 25 | cut -c1-300 >&2 || true
+      echo "--- Fin de los logs ---" >&2
       docker rm -f auth-users >/dev/null
     fi
     if [[ -n "$backup" ]] && docker inspect "$backup" >/dev/null 2>&1; then
@@ -102,8 +108,8 @@ env_file=""
 
 healthy=false
 for attempt in $(seq 1 60); do
-  if curl --fail --silent --show-error --max-time 10 http://127.0.0.1:8081/actuator/health \
-    | python3 -c 'import json,sys; assert json.load(sys.stdin).get("status") == "UP"'; then
+  if curl --fail --silent --max-time 10 http://127.0.0.1:8081/actuator/health 2>/dev/null \
+    | python3 -c 'import json,sys; assert json.load(sys.stdin).get("status") == "UP"' 2>/dev/null; then
     healthy=true
     break
   fi
